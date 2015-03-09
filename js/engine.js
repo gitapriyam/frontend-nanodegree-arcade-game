@@ -14,7 +14,7 @@
  * a little simpler to work with.
  */
 
-var Engine = (function(global) {
+var Engine = (function (global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
      * set the canvas elements height/width and add it to the DOM.
@@ -23,7 +23,12 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
-        lastTime;
+        lastTime,
+        startTime,
+        duration,
+        hours,
+        minutes,
+        seconds;
 
     canvas.width = 505;
     canvas.height = 606;
@@ -41,7 +46,12 @@ var Engine = (function(global) {
          */
         var now = Date.now(),
             dt = (now - lastTime) / 1000.0;
-
+        /*  These variables keep track of the time that has elapsed
+            for the duration of the game */
+        duration = Math.floor((now - startTime) / 1000);
+        hours = Math.floor(duration / 3600);
+        minutes = Math.floor((duration - (hours * 3600)) / 60);
+        seconds = duration - (hours * 3600) - (minutes * 60);
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
@@ -59,6 +69,14 @@ var Engine = (function(global) {
         win.requestAnimationFrame(main);
     };
 
+    /* This is a utility function which appends 0 to the hour,minute & second
+        if they are less than 10
+        */
+    function makePretty(val) {
+        var pretty = val < 10 ? "0" + val : val;
+        return pretty;
+    }
+
     /* This function does some initial setup that should only occur once,
      * particularly setting the lastTime variable that is required for the
      * game loop.
@@ -66,6 +84,7 @@ var Engine = (function(global) {
     function init() {
         reset();
         lastTime = Date.now();
+        startTime = lastTime;
         main();
     }
 
@@ -80,7 +99,7 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
     }
 
     /* This is called by the update function  and loops through all of the
@@ -91,10 +110,11 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
-        allEnemies.forEach(function(enemy) {
+        allEnemies.forEach(function (enemy) {
             enemy.update(dt);
         });
         player.update();
+        treasure.update();
     }
 
     /* This function initially draws the "game level", it will then call
@@ -109,15 +129,29 @@ var Engine = (function(global) {
          */
         var rowImages = [
                 'images/water-block.png',   // Top row is water
-                'images/stone-block.png',   // Row 1 of 3 of stone
-                'images/stone-block.png',   // Row 2 of 3 of stone
-                'images/stone-block.png',   // Row 3 of 3 of stone
-                'images/grass-block.png',   // Row 1 of 2 of grass
-                'images/grass-block.png'    // Row 2 of 2 of grass
-            ],
+                'images/stone-block.png',   // Row 1 of 4 of stone
+                'images/stone-block.png',   // Row 2 of 4 of stone
+                'images/stone-block.png',   // Row 3 of 4 of stone
+                'images/stone-block.png',   // Row 4 of 4 of grass
+                'images/grass-block.png'    // Row 1 of 1 of grass
+        ],
             numRows = 6,
             numCols = 5,
             row, col;
+
+        /* These have added the graphics to display the
+            the treasure collected and the duration of the game
+            */
+        ctx.rect(0, 0, canvas.width, canvas.height);
+        ctx.stroke();
+        ctx.fillStyle = "white";
+        ctx.fillRect(1, 1, canvas.width - 2, canvas.height - 2);
+        ctx.font = "16px serif";
+        var scoreText = "Treasures Colllected : " + wealth;
+        var length = Math.floor(ctx.measureText(scoreText).width);
+        ctx.strokeText(scoreText, 20, 30);
+        global.durationText = makePretty(hours) + ":" + makePretty(minutes) + ":" + makePretty(seconds);
+        ctx.strokeText("Duration: " + global.durationText, length + 200, 30);
 
         /* Loop through the number of rows and columns we've defined above
          * and, using the rowImages array, draw the correct image for that
@@ -136,7 +170,6 @@ var Engine = (function(global) {
             }
         }
 
-
         renderEntities();
     }
 
@@ -148,11 +181,12 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
-        allEnemies.forEach(function(enemy) {
+        allEnemies.forEach(function (enemy) {
             enemy.render();
         });
 
         player.render();
+        treasure.render();
     }
 
     /* This function does nothing but it could have been a good place to
@@ -168,11 +202,22 @@ var Engine = (function(global) {
      * all of these images are properly loaded our game will start.
      */
     Resources.load([
-        'images/stone-block.png',
-        'images/water-block.png',
-        'images/grass-block.png',
-        'images/enemy-bug.png',
-        'images/char-boy.png'
+          'images/stone-block.png',
+          'images/water-block.png',
+          'images/grass-block.png',
+          'images/enemy-bug.png',
+          'images/char-boy.png',
+          "images/char-cat-girl.png",
+          'images/char-horn-girl.png',
+          "images/char-pink-girl.png",
+          "images/char-princess-girl.png",
+          'images/Key.png',
+          'images/Heart.png',
+          'images/Rock.png',
+          'images/Star.png',
+          'images/Gem%20Blue.png',
+          'images/Gem%20Orange.png',
+          'images/Gem%20Green.png'
     ]);
     Resources.onReady(init);
 
