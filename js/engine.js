@@ -139,7 +139,7 @@ var Engine = (function (global) {
             numCols = 5,
             row, col;
 
-        /* These have added the graphics to display the
+        /* These have added to the graphics to display the
             the treasure collected and the duration of the game
             */
         ctx.rect(0, 0, canvas.width, canvas.height);
