@@ -126,7 +126,10 @@ Player.prototype.update = function () {
     */
 function isColliding(enemy) {
     var colliding = false;
-    if ((Math.abs(player.x - enemy.x) < 20) && (Math.abs(player.y - enemy.y) < 20)) {
+    if (player.x < enemy.x + 50 &&
+        player.x + 50 > enemy.x &&
+        player.y < enemy.y + 42 &&
+        player.y + 42 > enemy.y) {
         colliding = true;
     }
     return colliding;
@@ -210,23 +213,19 @@ Treasure.prototype.update = function () {
      Place all enemy objects in an array called allEnemies
      Place the player object in a variable called player
      */
-var bug1 = new Enemy();
-var bug2 = new Enemy();
-var bug3 = new Enemy();
-var bug4 = new Enemy();
-var bug5 = new Enemy();
-var bug6 = new Enemy();
-var bug7 = new Enemy();
-var bug8 = new Enemy();
-var allEnemies = [bug1, bug2, bug3, bug4, bug5, bug6, bug7, bug8];
-
-var player = new Player();
+var bug1 = new Enemy(),
+bug2 = new Enemy(),
+bug3 = new Enemy(),
+bug4 = new Enemy(),
+bug5 = new Enemy(),
+bug6 = new Enemy(),
+bug7 = new Enemy(),
+bug8 = new Enemy(),
+allEnemies = [bug1, bug2, bug3, bug4, bug5, bug6, bug7, bug8],
+player = new Player();
 
 /* This variable keeps track of the treasures collected by the player */
-var wealth = 9;
-var maxWealth = 0;
-
-var treasure = new Treasure();
+var wealth = 9, maxWealth = 0, treasure = new Treasure();
 
 /* This listens for key presses and sends the keys to your
  Player.handleInput() method. You don't need to modify this.
