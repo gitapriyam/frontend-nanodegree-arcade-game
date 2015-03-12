@@ -12,11 +12,7 @@ frontend-nanodegree-arcade-game
   Licensing
   ---------
 	There no licensing requirements for this project.
-  
-  Contacts
-  --------
-    If you want to make suggestion or improvements of this project send an email to parthasramesh@gmail.com
-  
+   
   How to play the game
   --------------------
 	You can open the index.html available the clone project folder with any available browser (preferably Google Chrome).
@@ -27,5 +23,4 @@ frontend-nanodegree-arcade-game
 	Have fun!!
 	
 Students should use this rubric: 	https://www.udacity.com/course/viewer#!/c-ud015/l-3072058665/m-3072588797
-
 for self-checking their submission.
