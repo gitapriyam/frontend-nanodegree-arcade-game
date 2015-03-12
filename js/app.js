@@ -5,8 +5,6 @@
     4) It can belong to any of the row counts.
     5) It has an image
 */
-
-var maxWealth = 0;
 var Enemy = function () {
     this.numRows = 4;
     this.numColumns = 5;
@@ -17,17 +15,17 @@ var Enemy = function () {
     };
     this.speed = this.randomSpeed();
     this.reset();
-}
+};
 
 /* This is the default x start position */
 Enemy.prototype.coordinateX = function () {
     return -101;
-}
+};
 
 /* This is the default y start position */
 Enemy.prototype.coordinateY = function () {
     return 64 + Math.floor(Math.random() * this.numRows) * 83;
-}
+};
 
 /* Update the enemy's position, required method for game
  Parameter: dt, a time delta between ticks
@@ -40,14 +38,15 @@ Enemy.prototype.update = function (dt) {
     if (this.x > (this.numColumns * 101)) {
         this.reset();
     }
-}
+};
 
 /* This resets the position of the enemy */
 Enemy.prototype.reset = function () {
     this.x = this.coordinateX();
     this.y = this.coordinateY();
     this.speed = this.randomSpeed();
-}
+};
+
 // Set random speed for the different bugs
 // CH - added random bug speed based on difference between min & max speeds
 Enemy.prototype.randomSpeed = function () {
@@ -75,7 +74,7 @@ var Player = function () {
                     "images/char-cat-girl.png",
                     'images/char-horn-girl.png',
                     "images/char-pink-girl.png",
-                    "images/char-princess-girl.png"]
+                    "images/char-princess-girl.png"];
     this.sprite = this.images[Math.floor(Math.random() * 5)];
     this.reset();
 };
@@ -87,7 +86,7 @@ var Player = function () {
 
 Player.prototype.reset = function () {
     var row = Math.floor(Math.random() * 2);
-    this.y = (row == 0) ? -8 : 407;
+    this.y = 407;
     this.x = Math.floor(Math.random() * 5) * 101;
 };
 
@@ -116,10 +115,10 @@ Player.prototype.handleInput = function (keyCode) {
 
 /*This is the update function for the player */
 Player.prototype.update = function () {
-    /*  I have delegated the function checkCollisions
-        to the Engine class. So this function essentially does nothing
-        */
-}
+    if (this.y < 0) {
+        this.reset();
+    }
+};
 
 /*  This function verifies if there is a collision
     between an enemy and player 
@@ -127,7 +126,7 @@ Player.prototype.update = function () {
     */
 function isColliding(enemy) {
     var colliding = false;
-    if ((Math.abs(player.x - enemy.x) < 20) & (Math.abs(player.y - enemy.y) < 20)) {
+    if ((Math.abs(player.x - enemy.x) < 20) && (Math.abs(player.y - enemy.y) < 20)) {
         colliding = true;
     }
     return colliding;
@@ -145,11 +144,11 @@ function checkCollisions() {
             if (wealth <= 0) {
                 window.sessionStorage.setItem("wealth", maxWealth);
                 window.sessionStorage.setItem("duration", durationText);
-                window.location = "./gameover.html"
+                window.location = "./gameover.html";
             }
         }
     }
-};
+}
 
 /*  Treasure is a collection of treasures
     to be collected by the player
@@ -169,31 +168,31 @@ var Treasure = function () {
                     'images/Gem%20Orange.png',
                     'images/Gem%20Green.png'];
     this.image = this.images[Math.floor(Math.random() * 6)];
-    this.numRows = 6;
+    this.rows = { min: 2, max: 6 };
     this.numColumns = 5;
     this.reset();
-}
+};
 
 /*  This reset function of the treasure assigns x & y co-ordinates
     and the treasure image based on some random number generated
     */
 
 Treasure.prototype.reset = function () {
-    var row = Math.floor(Math.random() * this.numRows);
-    this.x = Math.floor(Math.random() * row) * 101;
-    this.y = -8 + Math.floor(Math.random() * this.numRows) * 83;
+    var row = this.rows.min + Math.floor(Math.random() * (this.rows.max - this.rows.min));
+    this.x = Math.floor(Math.random() * this.numColumns) * 101;
+    this.y = row * 83;
     this.image = this.images[Math.floor(Math.random() * 6)];
-}
+};
 
 /*  This render function of the Treasure draws the treasure */
 Treasure.prototype.render = function () {
     ctx.drawImage(Resources.get(this.image), this.x, this.y);
-}
+};
 
 /*  This is a function which allows the player to gather the treaure 
     displayed on the screen */
 function gatherWealth() {
-    if ((Math.abs(treasure.x - player.x) < 20) & (Math.abs(treasure.y - player.y) < 20)) {
+    if ((Math.abs(treasure.x - player.x) < 20) && (Math.abs(treasure.y - player.y) < 20)) {
         wealth++;
         maxWealth = Math.max(wealth, maxWealth);
         treasure.reset();
@@ -205,7 +204,7 @@ function gatherWealth() {
     */
 Treasure.prototype.update = function () {
     gatherWealth();
-}
+};
 
 /*   Now instantiate your objects.
      Place all enemy objects in an array called allEnemies
@@ -224,7 +223,9 @@ var allEnemies = [bug1, bug2, bug3, bug4, bug5, bug6, bug7, bug8];
 var player = new Player();
 
 /* This variable keeps track of the treasures collected by the player */
-var wealth = 0;
+var wealth = 9;
+var maxWealth = 0;
+
 var treasure = new Treasure();
 
 /* This listens for key presses and sends the keys to your

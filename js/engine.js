@@ -67,7 +67,7 @@ var Engine = (function (global) {
          * function again as soon as the browser is able to draw another frame.
          */
         win.requestAnimationFrame(main);
-    };
+    }
 
     /* This is a utility function which appends 0 to the hour,minute & second
         if they are less than 10
