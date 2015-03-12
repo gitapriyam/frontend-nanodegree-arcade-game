@@ -123,13 +123,15 @@ Player.prototype.update = function () {
 /*  This function verifies if there is a collision
     between an enemy and player 
     based on their co-cordinates
+    x is based on half the width (101/2)
+    y is based on half the height (83/2)
     */
 function isColliding(enemy) {
     var colliding = false;
     if (player.x < enemy.x + 50 &&
         player.x + 50 > enemy.x &&
-        player.y < enemy.y + 42 &&
-        player.y + 42 > enemy.y) {
+        player.y < enemy.y + 41 &&
+        player.y + 41 > enemy.y) {
         colliding = true;
     }
     return colliding;
@@ -195,7 +197,12 @@ Treasure.prototype.render = function () {
 /*  This is a function which allows the player to gather the treaure 
     displayed on the screen */
 function gatherWealth() {
-    if ((Math.abs(treasure.x - player.x) < 20) && (Math.abs(treasure.y - player.y) < 20)) {
+    if ( player.x < treasure.x + 50 &&
+         player.x + 50 > treasure.x &&
+         player.y < treasure.y + 41 &&
+         player.y + 41 > treasure.y) {
+
+        //((Math.abs(treasure.x - player.x) < 20) && (Math.abs(treasure.y - player.y) < 20)) {
         wealth++;
         maxWealth = Math.max(wealth, maxWealth);
         treasure.reset();
@@ -222,10 +229,13 @@ bug6 = new Enemy(),
 bug7 = new Enemy(),
 bug8 = new Enemy(),
 allEnemies = [bug1, bug2, bug3, bug4, bug5, bug6, bug7, bug8],
-player = new Player();
-
+player = new Player(),
 /* This variable keeps track of the treasures collected by the player */
-var wealth = 9, maxWealth = 0, treasure = new Treasure();
+wealth = 9,
+/* This is the game statistics */
+maxWealth = 9,
+/*This is the treasure instance */
+treasure = new Treasure();
 
 /* This listens for key presses and sends the keys to your
  Player.handleInput() method. You don't need to modify this.
